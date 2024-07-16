@@ -83,7 +83,7 @@ def main(iargs=None):
                 dt = date + ' ' + time + ' ' + time_zone
                 print(dt)
                 tStart = datetime.datetime.strptime(dt,"%d-%b-%Y %H:%M:%S %Z")
-                filedate = tStart.strftime("%Y%m%dT%H%M")
+                filedate = tStart.strftime("%Y%m%d")
         
         imgDate = (filedate)
         print (imgDate)
@@ -93,20 +93,23 @@ def main(iargs=None):
         if not os.path.exists(imgDir):
            os.makedirs(imgDir) ### TO
         # print (imgDir)
-        cmd = 'unpackFrame_UAVSAR_segments.py -i ' + annFile  + ' -d '+ inps.dopFile + ' -s '+ inps.segment + ' -o ' + imgDir ## to read segments
+        cmd = './unpackFrame_UAVSAR_segments.py -i ' + annFile  + ' -d '+ inps.dopFile + ' -s '+ inps.segment + ' -o ' + imgDir ## to read segments
         print (cmd)
         os.system(cmd)
+
+        new_slc_fn = f'{imgDate}.slc'
+        new_ann_fn = f'{imgDate}.ann'
         
-        cmd = 'mv ' + file + ' ' + imgDir
+        cmd = f'mv {file} {imgDir}/{new_slc_fn}'
         print(cmd)
         os.system(cmd)
 
-        cmd = 'cp ' + annFile + ' ' + imgDir 
+        cmd = f'cp {annFile} {imgDir}/{new_ann_fn}'
         print(cmd)
         os.system(cmd)
 
         shelveFile = os.path.join(imgDir, 'data')
-        slcFile = os.path.join(imgDir, os.path.basename(file))
+        slcFile = os.path.join(imgDir, new_slc_fn)
         write_xml(shelveFile, slcFile)
 
 if __name__ == '__main__':
